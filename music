@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+pushd ~/projects/dockerfiles/music
+
+usage(){
+    echo "music [-h] [-w] [-b]"
+}
+
+while getopts ":hw" opt; do
+  case ${opt} in
+    h ) # we're at home, connect to network mpd
+      docker-compose run --rm --no-deps ncmpcpp ncmpcpp --host 10.127.11.103;;
+    w ) # we're at work, start mopidy locally and connect
+      # start music server
+      docker-compose up -d mopidy
+
+      # start music client
+      sleep 10; docker-compose run --rm ncmpcpp ncmpcpp;;
+    b ) # docker-compose build the things
+      docker-compose build;;
+    \? )
+      usage
+      exit;;
+    * )
+      usage
+      exit;;
+  esac
+done
+
+# stopping all the tings
+docker-compose down

@@ -1,0 +1,19 @@
+---
+version: "3"
+services:
+  mopidy:
+    build: docker-mopidy
+    ports:
+      - "6600:6600"
+      - "6680:6680"
+    volumes:
+      - ${PWD}/00-usb_sound.conf:/usr/share/alsa/alsa.conf.d/00-usb_sound.conf
+    user: root
+    devices:
+      - /dev/snd
+  ncmpcpp:
+    build: docker-ncmpcpp
+    volumes:
+      - ${PWD}/ncmpcpp_config:/home/ncmpcpp/.ncmpcpp/config
+    network_mode: service:mopidy
+
